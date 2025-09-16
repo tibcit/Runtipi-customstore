@@ -1,0 +1,21 @@
+{
+  "$schema": "../app-info-schema.json",
+  "name": "Piped",
+  "id": "piped",
+  "available": true,
+  "exposable": true,
+  "dynamic_config": true,
+  "port": 8080,
+  "tipi_version": 10,
+  "version": "latest",
+  "categories": ["media", "social"],
+  "description": "Piped is an open‑source alternative front‑end to YouTube.  It allows you to watch YouTube videos without ads or tracking, supports both audio‑only mode and playlists, and offers features like light/dark themes, subscriptions independent from Google, notifications, and importer/exporter tools for other clients【831232061929096†L38-L63】.  Designed to be lightweight and efficient, it uses the NewPipe extractor rather than the official YouTube API and can scale to thousands of users【831232061929096†L38-L69】.",
+  "short_desc": "A privacy‑friendly YouTube front‑end.",
+  "author": "TeamPiped",
+  "source": "https://github.com/TeamPiped/Piped",
+  "supported_architectures": ["arm64", "amd64"],
+  "form_fields": [],
+  "created_at": 1757982568000,
+  "updated_at": 1757982568000,
+  "force_pull": true
+}

@@ -1,0 +1,81 @@
+version: "3.7"
+services:
+  piped-frontend:
+    container_name: piped-frontend
+    image: 1337kavin/piped-frontend:latest
+    environment:
+      - BACKEND_HOSTNAME=piped-backend:8080
+      - HTTP_MODE=http
+    depends_on:
+      - piped-backend
+    ports:
+      - "${APP_PORT}:80"
+    restart: unless-stopped
+    networks:
+      - tipi_main_network
+    labels:
+      traefik.enable: true
+      traefik.http.middlewares.piped-web-redirect.redirectscheme.scheme: https
+      traefik.http.services.piped.loadbalancer.server.port: 80
+      traefik.http.routers.piped-insecure.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.piped-insecure.entrypoints: web
+      traefik.http.routers.piped-insecure.service: piped
+      traefik.http.routers.piped-insecure.middlewares: piped-web-redirect
+      traefik.http.routers.piped.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.piped.entrypoints: websecure
+      traefik.http.routers.piped.service: piped
+      traefik.http.routers.piped.tls.certresolver: myresolver
+      traefik.http.routers.piped-local-insecure.rule: Host(`piped.${LOCAL_DOMAIN}`)
+      traefik.http.routers.piped-local-insecure.entrypoints: web
+      traefik.http.routers.piped-local-insecure.service: piped
+      traefik.http.routers.piped-local-insecure.middlewares: piped-web-redirect
+      traefik.http.routers.piped-local.rule: Host(`piped.${LOCAL_DOMAIN}`)
+      traefik.http.routers.piped-local.entrypoints: websecure
+      traefik.http.routers.piped-local.service: piped
+      traefik.http.routers.piped-local.tls: true
+      runtipi.managed: true
+  piped-backend:
+    container_name: piped-backend
+    image: 1337kavin/piped:latest
+    volumes:
+      - ${APP_DATA_DIR}/data/config.properties:/app/config.properties:ro
+    depends_on:
+      - piped-postgres
+    restart: unless-stopped
+    networks:
+      - tipi_main_network
+    labels:
+      runtipi.managed: true
+  piped-proxy:
+    container_name: piped-proxy
+    image: 1337kavin/piped-proxy:latest
+    restart: unless-stopped
+    networks:
+      - tipi_main_network
+    labels:
+      runtipi.managed: true
+  piped-bg-helper:
+    container_name: piped-bg-helper
+    image: 1337kavin/bg-helper-server:latest
+    restart: unless-stopped
+    networks:
+      - tipi_main_network
+    labels:
+      runtipi.managed: true
+  piped-postgres:
+    container_name: piped-postgres
+    image: postgres:14
+    environment:
+      POSTGRES_DB: piped
+      POSTGRES_USER: piped
+      POSTGRES_PASSWORD: piped
+    volumes:
+      - ${APP_DATA_DIR}/data/db:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - tipi_main_network
+    labels:
+      runtipi.managed: true
+networks:
+  tipi_main_network:
+    external: true
