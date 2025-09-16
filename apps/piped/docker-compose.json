@@ -5,7 +5,7 @@
       "name": "piped-frontend",
       "image": "1337kavin/piped-frontend:latest",
       "isMain": true,
-      "internalPort": 80,
+      "internalPort": 8080,
       "environment": {
         "BACKEND_HOSTNAME": "piped-backend:8080",
         "HTTP_MODE": "http"
