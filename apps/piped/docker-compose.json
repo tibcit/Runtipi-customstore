@@ -1,0 +1,51 @@
+{
+  "$schema": "../dynamic-compose-schema.json",
+  "services": [
+    {
+      "name": "piped-frontend",
+      "image": "1337kavin/piped-frontend:latest",
+      "isMain": true,
+      "internalPort": 80,
+      "environment": {
+        "BACKEND_HOSTNAME": "piped-backend:8080",
+        "HTTP_MODE": "http"
+      },
+      "dependsOn": ["piped-backend"]
+    },
+    {
+      "name": "piped-backend",
+      "image": "1337kavin/piped:latest",
+      "dependsOn": ["piped-postgres"],
+      "volumes": [
+        {
+          "hostPath": "${APP_DATA_DIR}/data/config.properties",
+          "containerPath": "/app/config.properties",
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "name": "piped-proxy",
+      "image": "1337kavin/piped-proxy:latest"
+    },
+    {
+      "name": "piped-bg-helper",
+      "image": "1337kavin/bg-helper-server:latest"
+    },
+    {
+      "name": "piped-postgres",
+      "image": "postgres:14",
+      "environment": {
+        "POSTGRES_DB": "piped",
+        "POSTGRES_USER": "piped",
+        "POSTGRES_PASSWORD": "piped"
+      },
+      "volumes": [
+        {
+          "hostPath": "${APP_DATA_DIR}/data/db",
+          "containerPath": "/var/lib/postgresql/data"
+        }
+      ]
+    }
+  ]
+}
