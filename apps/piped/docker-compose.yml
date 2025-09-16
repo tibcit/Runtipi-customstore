@@ -9,14 +9,14 @@ services:
     depends_on:
       - piped-backend
     ports:
-      - "${APP_PORT}:80"
+      - "${APP_PORT}:8080"
     restart: unless-stopped
     networks:
       - tipi_main_network
     labels:
       traefik.enable: true
       traefik.http.middlewares.piped-web-redirect.redirectscheme.scheme: https
-      traefik.http.services.piped.loadbalancer.server.port: 80
+      traefik.http.services.piped.loadbalancer.server.port: 8080
       traefik.http.routers.piped-insecure.rule: Host(`${APP_DOMAIN}`)
       traefik.http.routers.piped-insecure.entrypoints: web
       traefik.http.routers.piped-insecure.service: piped
